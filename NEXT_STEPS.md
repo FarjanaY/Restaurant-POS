@@ -43,9 +43,11 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] Gated to admin/manager/cashier roles (kitchen has no REST order access — that's the KDS socket in Step 9)
 - [x] Improved `errorHandler` to map Mongoose `ValidationError`/`CastError` to 400 instead of 500 (benefits every write endpoint, not just orders)
 
-### Step 8 — Payments API (cash first)
-- [ ] `POST /api/orders/:id/payments` — cash tender + change calculation, split-tender support
-- [ ] Wrap order+payment write in a MongoDB transaction
+### Step 8 — Payments API (cash first) ✅
+- [x] `POST /api/orders/:id/payments` — cash tender + change calculation; a tender covering less than the remaining balance is a split-tender leg (no change), completing tenders trigger change + `status: paid`
+- [x] Card method wired to a `501` placeholder pending Step 14 (Stripe Terminal)
+- [x] Order+payment write is already atomic — payments are embedded on the Order document, not a separate collection, so no multi-doc transaction is needed; added `optimisticConcurrency` on the Order schema instead to guard against two concurrent requests silently clobbering each other (mapped to 409 in `errorHandler`)
+- [x] Verified the PRD acceptance example exactly: €10 tendered on a €7.30 order → €2.70 change
 
 ### Step 9 — KDS realtime wiring
 - [ ] Order controller emits `order:new` / `order:updated` / `order:bumped` on the `/kds` Socket.IO namespace

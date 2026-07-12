@@ -10,6 +10,9 @@ export function errorHandler(err, req, res, _next) {
   if (err.name === 'CastError') {
     return res.status(400).json({ message: `Invalid ${err.path}: ${err.value}` });
   }
+  if (err.name === 'VersionError') {
+    return res.status(409).json({ message: 'Resource was modified concurrently — reload and retry' });
+  }
 
   const status = err.status || 500;
   console.error(err);

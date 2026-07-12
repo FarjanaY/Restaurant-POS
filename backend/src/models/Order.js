@@ -58,7 +58,9 @@ const orderSchema = new Schema(
     lines: [orderLineSchema],
     payments: [paymentSchema],
   },
-  { timestamps: true }
+  // optimisticConcurrency guards against two concurrent payment/edit requests silently
+  // clobbering each other — a lost update here means a real, unrecovered cash transaction.
+  { timestamps: true, optimisticConcurrency: true }
 );
 
 export default model('Order', orderSchema);
