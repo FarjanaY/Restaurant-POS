@@ -10,7 +10,7 @@ import {
   markLineDone,
   completeOrder,
 } from '../controllers/ordersController.js';
-import { addPayment } from '../controllers/paymentsController.js';
+import { addPayment, createCardIntent } from '../controllers/paymentsController.js';
 
 const router = Router();
 
@@ -28,6 +28,7 @@ router.get('/:id', READ_ROLES, getOrder);
 router.post('/', REGISTER_ROLES, createOrder);
 router.patch('/:id', REGISTER_ROLES, updateOrder);
 router.post('/:id/void', REGISTER_ROLES, voidOrder);
+router.post('/:id/card-intent', REGISTER_ROLES, createCardIntent);
 router.post('/:id/payments', REGISTER_ROLES, addPayment);
 router.patch('/:id/lines/:lineId', KITCHEN_ROLES, markLineDone);
 router.post('/:id/complete', KITCHEN_ROLES, completeOrder);

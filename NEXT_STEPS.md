@@ -83,9 +83,13 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] Verified with two concurrent browser sessions (cashier + kitchen): a cashier's payment makes the order appear on the kitchen screen **without any reload**, and bumping moves it to Recently Completed **without any reload** — confirmed via explicit timing (no interval/refresh fired in the window) rather than assumed
 - [x] **Real bug caught by this testing, not assumed fixed:** the KDS socket connection was silently CORS-blocked because a stray leftover dev-server process was squatting on port 5173, pushing the actual frontend to 5174 while the backend's `CLIENT_ORIGIN` default only allows 5173. First test run showed order updates appearing to work, which turned out to be misleading — a follow-up run with explicit diagnostics (clean DB state, predictable token numbers, checking for CORS errors) confirmed the failure, then confirmed the fix
 
-### Step 14 — Stripe Terminal integration
-- [ ] Backend: PaymentIntents flow via Stripe Node SDK
-- [ ] Frontend: card/contactless payment path alongside cash
+### Step 14 — Stripe Terminal integration ✅ (code complete; hardware/reader flow unverifiable without a real Stripe account)
+- [x] Backend: `services/stripeService.js` (connection token, PaymentIntent create/retrieve) + `POST /api/orders/:id/card-intent` (creates a PaymentIntent for the remaining balance) + `POST /api/terminal/connection-token` (boots the Terminal SDK)
+- [x] `paymentsController`'s card branch **independently re-verifies the PaymentIntent against Stripe** (`status === 'succeeded'`, actual `amount_received`) before recording a payment — never trusts the client's word that a card payment succeeded
+- [x] `createPaymentsController()` factory takes injectable Stripe functions (same DI pattern as `computeOrderTotals`'s `resolveRate`) so the verification logic (success, wrong status, missing intent) is unit-tested (`cardPayments.test.js`) without ever calling the real Stripe API
+- [x] Frontend: `stripeTerminal.js` wraps `@stripe/terminal-js` (connect to Stripe's test-mode **simulated** reader, collect + process payment); `PaymentPanel` gets a Cash/Card tab, calling `createCardIntent` → Terminal SDK → `confirmCardPayment`
+- [x] **Cannot be verified end-to-end** — the Terminal SDK's `discoverReaders`/`connectReader`/`collectPaymentMethod` calls hit Stripe's real API even in test mode, and this environment has no Stripe account (`.env.example`'s `STRIPE_SECRET_KEY` is a placeholder). What **was** verified in a real browser: the graceful-failure path — clicking "Charge Card" without real credentials fails with a clear on-screen error (`onFetchConnectionToken` failure), zero uncaught exceptions, and the register stays fully usable (switched back to Cash and kept working). Full verification requires a real Stripe test account; see PRD §11 "Remaining to confirm before go-live"
+- [x] Noted: `@stripe/terminal-js` pulls in a `ws` version with a known high-severity DoS advisory (`GHSA-96hv-2xvq-fx4p`); left as-is since the vector requires acting as a WebSocket *server*, which doesn't apply to this browser-side SDK usage, and the only fix (`npm audit fix --force`) downgrades to an old 0.8.0 release
 
 ### Step 15 — Admin UI + EOD summary
 - [ ] Menu management screens (CRUD, active toggle, reorder)

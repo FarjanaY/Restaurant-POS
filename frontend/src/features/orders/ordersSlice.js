@@ -54,13 +54,45 @@ export const sendOrder = createAsyncThunk('orders/send', async (cart, { rejectWi
   }
 });
 
-export const addPayment = createAsyncThunk(
-  'orders/addPayment',
+export const addCashPayment = createAsyncThunk(
+  'orders/addCashPayment',
   async ({ orderId, tendered }, { rejectWithValue }) => {
     try {
       const { data } = await apiClient.post(`/orders/${orderId}/payments`, {
         method: 'cash',
         tendered,
+      });
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || 'Payment failed');
+    }
+  }
+);
+
+// Requests a Stripe PaymentIntent for the order's remaining balance — the
+// Terminal SDK then hands this to the reader (see stripeTerminal.js).
+export const createCardIntent = createAsyncThunk(
+  'orders/createCardIntent',
+  async (orderId, { rejectWithValue }) => {
+    try {
+      const { data } = await apiClient.post(`/orders/${orderId}/card-intent`);
+      return data; // { clientSecret, paymentIntentId }
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || 'Could not start card payment');
+    }
+  }
+);
+
+// Records a card payment after the Terminal SDK has already collected and
+// processed it — the backend independently re-verifies the PaymentIntent
+// with Stripe before trusting it (see paymentsController.addPayment).
+export const confirmCardPayment = createAsyncThunk(
+  'orders/confirmCardPayment',
+  async ({ orderId, paymentIntentId }, { rejectWithValue }) => {
+    try {
+      const { data } = await apiClient.post(`/orders/${orderId}/payments`, {
+        method: 'card',
+        paymentIntentId,
       });
       return data;
     } catch (err) {

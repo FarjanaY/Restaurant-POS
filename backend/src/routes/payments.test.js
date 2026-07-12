@@ -144,12 +144,15 @@ test('rejects a cash payment with no tendered amount', async () => {
   assert.equal(res.status, 400);
 });
 
-test('card payments are not yet implemented', async () => {
+test('rejects a card payment with no paymentIntentId', async () => {
+  // Full card-payment business logic (success/failure verification against
+  // Stripe) is covered in cardPayments.test.js via dependency injection —
+  // this only checks the input validation reachable through the real route.
   const order = await createOrder(7.3);
   const res = await fetch(`${baseUrl}/api/orders/${order._id}/payments`, {
     method: 'POST',
     headers: cashierHeader,
     body: JSON.stringify({ method: 'card' }),
   });
-  assert.equal(res.status, 501);
+  assert.equal(res.status, 400);
 });
