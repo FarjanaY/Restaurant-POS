@@ -91,9 +91,11 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] **Cannot be verified end-to-end** — the Terminal SDK's `discoverReaders`/`connectReader`/`collectPaymentMethod` calls hit Stripe's real API even in test mode, and this environment has no Stripe account (`.env.example`'s `STRIPE_SECRET_KEY` is a placeholder). What **was** verified in a real browser: the graceful-failure path — clicking "Charge Card" without real credentials fails with a clear on-screen error (`onFetchConnectionToken` failure), zero uncaught exceptions, and the register stays fully usable (switched back to Cash and kept working). Full verification requires a real Stripe test account; see PRD §11 "Remaining to confirm before go-live"
 - [x] Noted: `@stripe/terminal-js` pulls in a `ws` version with a known high-severity DoS advisory (`GHSA-96hv-2xvq-fx4p`); left as-is since the vector requires acting as a WebSocket *server*, which doesn't apply to this browser-side SDK usage, and the only fix (`npm audit fix --force`) downgrades to an old 0.8.0 release
 
-### Step 15 — Admin UI + EOD summary
-- [ ] Menu management screens (CRUD, active toggle, reorder)
-- [ ] `GET /api/reports/daily-summary` + frontend EOD view
+### Step 15 — Admin UI + EOD summary ✅
+- [x] Backend: `GET /api/reports/daily-summary` (admin/manager only) — order count, total sales, tax collected, tender breakdown, scoped to orders `closedAt` within a UTC day (accepts `?date=`); voided orders excluded automatically since they never reach `paid`. Noted as UTC-only for now — real Europe/Dublin timezone handling is a pre-go-live item, same caveat as the VAT rates
+- [x] Backend: read-only `GET /api/admin/tax-categories` so the menu-item form has something to populate its tax-category dropdown with (full VAT-rate CRUD stays out of scope — a bigger feature tied to the Ireland compliance work, not Phase 1 menu admin)
+- [x] Frontend: `AdminPage` tabs — Categories, Menu Items, Modifier Groups, Daily Summary — each its own component doing direct CRUD via `apiClient` (no Redux slice; consistent with `KdsPage`'s precedent for page-local, not-shared-elsewhere data)
+- [x] Verified in a real browser as admin: created a category, a modifier group (with two priced options), and a menu item referencing both — the new item appeared **live** on the Register page's menu under its category; Daily Summary correctly reflected two paid test orders (€10.00 total, €0.59 tax, €10.00 cash) with zero console errors
 
 ### Step 16 — Phase 1 exit check
 - [ ] Run through PRD §3.3 acceptance criteria and §3.4 exit criteria end-to-end

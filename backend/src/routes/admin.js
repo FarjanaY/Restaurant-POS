@@ -4,10 +4,13 @@ import { requireAuth, requireRole } from '../middleware/auth.js';
 import * as categoryController from '../controllers/categoryController.js';
 import * as menuItemController from '../controllers/menuItemController.js';
 import * as modifierGroupController from '../controllers/modifierGroupController.js';
+import { listTaxCategories } from '../controllers/taxCategoryController.js';
 
 const router = Router();
 
 router.use(requireAuth, requireRole('admin'));
+
+router.get('/tax-categories', listTaxCategories);
 
 router.get('/categories', categoryController.listCategories);
 router.post('/categories', categoryController.createCategory);

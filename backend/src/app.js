@@ -7,6 +7,7 @@ import ordersRouter from './routes/orders.js';
 import authRouter from './routes/auth.js';
 import adminRouter from './routes/admin.js';
 import terminalRouter from './routes/terminal.js';
+import reportsRouter from './routes/reports.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -20,6 +21,7 @@ app.use('/api/orders', ordersRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/terminal', terminalRouter);
+app.use('/api/reports', reportsRouter);
 
 app.use(notFound);
 app.use(errorHandler);
