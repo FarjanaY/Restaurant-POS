@@ -20,9 +20,10 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] `backend/src/services/orderTotals.js` — given cart lines + modifiers, compute unit price, line total, VAT (net/gross split), subtotal, VAT total, grand total
 - [x] Unit tests (`orderTotals.test.js`, stubbed VAT resolver — no DB needed) against the PRD example (€5.00 sandwich: dine-in vs takeaway VAT split), modifiers/quantity, and discount handling
 
-### Step 4 — Menu API (read side)
-- [ ] Controller + `GET /api/menu` — categories with nested active items and their modifier groups
-- [ ] Manual test via curl/Postman against seeded data
+### Step 4 — Menu API (read side) ✅
+- [x] Controller (`controllers/menuController.js`) + `GET /api/menu` — categories with nested active items and their modifier groups; `GET /api/menu/modifier-groups`
+- [x] Sample menu seed data (categories, modifier groups, menu items) added to `seed.js` for manual/integration testing
+- [x] Manually verified via curl against seeded data; automated integration test (`routes/menu.test.js`) covers active-only filtering and modifier-group population
 
 ### Step 5 — Menu admin API (write side)
 - [ ] CRUD controllers for `Category`, `MenuItem`, `ModifierGroup`/`Modifier`
