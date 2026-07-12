@@ -54,9 +54,12 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] Wired `emitOrderNew` into the payment-completion path — per PRD FR3.1, the kitchen sees an order once it's **paid/confirmed**, not while the cashier is still building or holding it. Traced through the current business rules: `updateOrder`/`voidOrder` can only ever touch pre-payment orders (both are blocked once `status` leaves open/held), so there's no real caller for `order:updated`/`order:bumped` yet — bump specifically needs an "in-progress/completed" status model and a KDS-initiated action, which belongs with the KDS screen itself in Step 13, not stubbed speculatively here
 - [x] Verified with a real Socket.IO server + `socket.io-client` in-process: a connected `/kds` client receives nothing on order creation, then receives `order:new` the moment the order is paid
 
-### Step 10 — Frontend: Menu → Cart
-- [ ] Menu screen fetching `GET /api/menu`, category tabs, tap-to-add
-- [ ] Cart panel — modifiers (single/multi-select, required/min/max), quantity, remove/clear, wired into the existing `cartSlice`
+### Step 10 — Frontend: Menu → Cart ✅
+- [x] `menuSlice` (RTK async thunk) fetches `GET /api/menu`, registered in the store
+- [x] Menu screen — category tabs, tap-to-add; items without modifiers add directly, items with modifier groups open `ModifierPicker`
+- [x] `ModifierPicker` — single-select (radio-like, `maxSelect: 1`) and multi-select (checkbox-like, up to `maxSelect`) groups, respects `minSelect`/`required` to gate the confirm button, shows live unit price
+- [x] Cart panel — quantity +/-, remove, clear, running gross total, wired into the existing `cartSlice` (no changes needed there)
+- [x] Verified in a real browser via a Playwright script (`chromium` headless): menu loads, Cold Sandwich (no modifiers) adds directly, Latte opens the picker, Regular+Oat selections compute €4.00 correctly, cart total €9.00, zero console errors
 
 ### Step 11 — Frontend: Order type, notes, hold/recall
 - [ ] Dine-in/takeaway toggle wired to VAT display
