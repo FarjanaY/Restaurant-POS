@@ -36,6 +36,39 @@ export const recallOrder = createAsyncThunk('orders/recall', async (orderId) => 
   return data;
 });
 
+// Syncs the cart to a server-side order before payment — creates it if this is a
+// brand-new cart, or PATCHes it if it already exists (e.g. recalled from held).
+// Payments work against either 'open' or 'held' orders on the backend, so this
+// deliberately doesn't force a status change.
+export const sendOrder = createAsyncThunk('orders/send', async (cart, { rejectWithValue }) => {
+  const payload = { type: cart.orderType, notes: cart.orderNotes, lines: toApiLines(cart.lines) };
+  try {
+    if (cart.currentOrderId) {
+      const { data } = await apiClient.patch(`/orders/${cart.currentOrderId}`, payload);
+      return data;
+    }
+    const { data } = await apiClient.post('/orders', payload);
+    return data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data?.message || 'Could not send order');
+  }
+});
+
+export const addPayment = createAsyncThunk(
+  'orders/addPayment',
+  async ({ orderId, tendered }, { rejectWithValue }) => {
+    try {
+      const { data } = await apiClient.post(`/orders/${orderId}/payments`, {
+        method: 'cash',
+        tendered,
+      });
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || 'Payment failed');
+    }
+  }
+);
+
 const ordersSlice = createSlice({
   name: 'orders',
   initialState: { heldOrders: [], status: 'idle', error: null },

@@ -11,9 +11,10 @@ import {
   orderNotesChanged,
   cartCleared,
 } from '../features/cart/cartSlice.js';
-import { holdOrder } from '../features/orders/ordersSlice.js';
+import { holdOrder, sendOrder } from '../features/orders/ordersSlice.js';
 import ModifierPicker from '../features/menu/ModifierPicker.jsx';
 import HeldOrdersPanel from '../features/orders/HeldOrdersPanel.jsx';
+import PaymentPanel from '../features/orders/PaymentPanel.jsx';
 
 export default function RegisterPage() {
   const dispatch = useDispatch();
@@ -24,6 +25,8 @@ export default function RegisterPage() {
   const [activeCategoryId, setActiveCategoryId] = useState(null);
   const [pickerItem, setPickerItem] = useState(null);
   const [showHeldOrders, setShowHeldOrders] = useState(false);
+  const [paymentOrder, setPaymentOrder] = useState(null);
+  const [sendError, setSendError] = useState(null);
 
   useEffect(() => {
     dispatch(fetchMenu());
@@ -52,6 +55,16 @@ export default function RegisterPage() {
   async function handleHold() {
     await dispatch(holdOrder(cart)).unwrap();
     dispatch(cartCleared());
+  }
+
+  async function handleCharge() {
+    setSendError(null);
+    try {
+      const order = await dispatch(sendOrder(cart)).unwrap();
+      setPaymentOrder(order);
+    } catch (err) {
+      setSendError(err);
+    }
   }
 
   if (status === 'loading' || status === 'idle') {
@@ -210,6 +223,7 @@ export default function RegisterPage() {
           <p className="mt-1 text-xs text-gray-400">
             VAT-inclusive; the exact tax split is computed when the order is sent.
           </p>
+          {sendError && <p className="mt-1 text-sm text-red-600">{sendError}</p>}
 
           <div className="mt-3 grid grid-cols-2 gap-2">
             <button
@@ -223,6 +237,7 @@ export default function RegisterPage() {
             <button
               type="button"
               disabled={cartLines.length === 0}
+              onClick={handleCharge}
               className="rounded-md bg-gray-900 py-2 text-sm font-medium text-white disabled:opacity-40"
             >
               Charge
@@ -243,6 +258,17 @@ export default function RegisterPage() {
       )}
 
       {showHeldOrders && <HeldOrdersPanel onClose={() => setShowHeldOrders(false)} />}
+
+      {paymentOrder && (
+        <PaymentPanel
+          order={paymentOrder}
+          onClose={() => setPaymentOrder(null)}
+          onDone={() => {
+            setPaymentOrder(null);
+            dispatch(cartCleared());
+          }}
+        />
+      )}
     </div>
   );
 }

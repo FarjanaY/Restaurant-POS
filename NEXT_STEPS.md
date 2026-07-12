@@ -69,9 +69,11 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] Hold & recall — `ordersSlice` (`holdOrder`, `fetchHeldOrders`, `recallOrder`) + `HeldOrdersPanel`; holding does create-then-`PATCH held` (or just `PATCH held` if recalling an already-existing order), recalling does `PATCH open` then hydrates the cart via a new `cartHydrated` reducer
 - [x] Verified in a real browser via Playwright: wrong PIN shows the actual backend error message (a real bug caught by testing — `authSlice` was surfacing axios's generic "Request failed with status 401" instead of the API's "Invalid PIN"; fixed via `rejectWithValue`), correct PIN logs in, order type/line notes/order notes all survive a hold → recall round trip intact, zero unexpected console errors
 
-### Step 12 — Frontend: Payment (cash first)
-- [ ] Cash payment screen — tendered amount, change due
-- [ ] Receipt view (screen only for now; print/Stripe come next)
+### Step 12 — Frontend: Payment (cash first) ✅
+- [x] `ordersSlice.sendOrder` — syncs the cart to a server-side order on "Charge" (create if new, PATCH if recalled); `addPayment` posts a cash tender
+- [x] `PaymentPanel` — shows the server-authoritative subtotal/VAT/total (not the cart's gross-only estimate), tendered-amount input, remaining balance (supports repeat split-tender submits)
+- [x] `Receipt` (rendered once `order.status === 'paid'`) — itemized lines with modifiers, VAT breakdown, tendered/change; "New Order" clears the cart
+- [x] Verified in a real browser end-to-end: Charge → tender €10 on a €5.00 order → receipt shows €5.00 change → New Order resets to an empty cart, zero console errors (the exact €10-on-€7.30-→-€2.70 PRD figure is already covered by the Step 8 backend tests, which do use €7.30)
 
 ### Step 13 — Frontend: KDS screen
 - [ ] Connect to `/kds` socket namespace, render live order feed
