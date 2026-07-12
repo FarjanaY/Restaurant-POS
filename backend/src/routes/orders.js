@@ -1,22 +1,22 @@
 import { Router } from 'express';
 
+import { requireAuth, requireRole } from '../middleware/auth.js';
+import {
+  createOrder,
+  listOrders,
+  getOrder,
+  updateOrder,
+  voidOrder,
+} from '../controllers/ordersController.js';
+
 const router = Router();
 
-// Scaffold only — full implementation (VAT calc, payments, void) tracked in DEVELOPMENT_CHECKLIST.md Phase 1.
-router.post('/', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
+router.use(requireAuth, requireRole('admin', 'manager', 'cashier'));
 
-router.patch('/:id', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-router.post('/:id/payments', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-router.post('/:id/void', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
+router.get('/', listOrders);
+router.get('/:id', getOrder);
+router.post('/', createOrder);
+router.patch('/:id', updateOrder);
+router.post('/:id/void', voidOrder);
 
 export default router;

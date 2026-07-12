@@ -35,10 +35,13 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] `POST /api/auth/login` — PIN-only login (iterates active users, bcrypt-compares), issues JWT with `sub`/`role`/`name`
 - [x] Confirmed end-to-end: real login token unlocks `/api/admin/categories` in an integration test and manually via curl against the local dev DB
 
-### Step 7 — Orders API (core flow)
-- [ ] `POST /api/orders` — create order from cart, uses Step 2/3 services, assigns token number
-- [ ] `PATCH /api/orders/:id` — edit lines, hold, recall
-- [ ] `POST /api/orders/:id/void`
+### Step 7 — Orders API (core flow) ✅
+- [x] `POST /api/orders` — create order from cart, resolves menu items/modifiers server-side, uses Step 2/3 services, assigns a sequential token number (`Counter` model, atomic `$inc`), idempotent via `clientOrderId`
+- [x] `GET /api/orders` (filter by status) + `GET /api/orders/:id` — needed for hold/recall to actually list/find held orders
+- [x] `PATCH /api/orders/:id` — edit lines, hold (`status: held`), recall (`status: open`); changing type/discount alone recomputes VAT off the existing lines without resending the cart; blocked once an order is no longer open/held
+- [x] `POST /api/orders/:id/void` — blocked for already-voided or paid orders
+- [x] Gated to admin/manager/cashier roles (kitchen has no REST order access — that's the KDS socket in Step 9)
+- [x] Improved `errorHandler` to map Mongoose `ValidationError`/`CastError` to 400 instead of 500 (benefits every write endpoint, not just orders)
 
 ### Step 8 — Payments API (cash first)
 - [ ] `POST /api/orders/:id/payments` — cash tender + change calculation, split-tender support
