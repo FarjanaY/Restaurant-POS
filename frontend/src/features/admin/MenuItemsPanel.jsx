@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
 import { apiClient } from '../../api/client.js';
 
-const EMPTY_FORM = { name: '', categoryId: '', basePrice: '', taxCategoryId: '', modifierGroupIds: [] };
+const EMPTY_FORM = {
+  name: '',
+  categoryId: '',
+  basePrice: '',
+  taxCategoryId: '',
+  sortOrder: 0,
+  modifierGroupIds: [],
+};
 
 export default function MenuItemsPanel() {
   const [items, setItems] = useState([]);
@@ -51,7 +58,11 @@ export default function MenuItemsPanel() {
     e.preventDefault();
     setError(null);
     try {
-      await apiClient.post('/admin/menu-items', { ...form, basePrice: Number(form.basePrice) });
+      await apiClient.post('/admin/menu-items', {
+        ...form,
+        basePrice: Number(form.basePrice),
+        sortOrder: Number(form.sortOrder),
+      });
       setForm(EMPTY_FORM);
       await refresh();
     } catch (err) {
@@ -128,6 +139,15 @@ export default function MenuItemsPanel() {
             ))}
           </select>
         </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500">Sort order</label>
+          <input
+            type="number"
+            value={form.sortOrder}
+            onChange={(e) => setForm((f) => ({ ...f, sortOrder: e.target.value }))}
+            className="mt-1 w-20 rounded-md border border-gray-300 px-2 py-1"
+          />
+        </div>
 
         <div className="w-full">
           <label className="block text-xs font-medium text-gray-500">Modifier groups</label>
@@ -158,6 +178,7 @@ export default function MenuItemsPanel() {
             <th className="pb-2">Category</th>
             <th className="pb-2">Price</th>
             <th className="pb-2">Tax</th>
+            <th className="pb-2">Sort</th>
             <th className="pb-2">Active</th>
             <th className="pb-2" />
           </tr>
@@ -180,6 +201,17 @@ export default function MenuItemsPanel() {
                 />
               </td>
               <td className="py-2">{taxCategories.find((t) => t._id === item.taxCategoryId)?.name || '—'}</td>
+              <td className="py-2">
+                <input
+                  type="number"
+                  defaultValue={item.sortOrder}
+                  onBlur={(e) =>
+                    Number(e.target.value) !== item.sortOrder &&
+                    handleUpdate(item._id, { sortOrder: Number(e.target.value) })
+                  }
+                  className="w-16 rounded border border-transparent px-1 hover:border-gray-200"
+                />
+              </td>
               <td className="py-2">
                 <input
                   type="checkbox"

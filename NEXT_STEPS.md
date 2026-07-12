@@ -97,9 +97,17 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] Frontend: `AdminPage` tabs — Categories, Menu Items, Modifier Groups, Daily Summary — each its own component doing direct CRUD via `apiClient` (no Redux slice; consistent with `KdsPage`'s precedent for page-local, not-shared-elsewhere data)
 - [x] Verified in a real browser as admin: created a category, a modifier group (with two priced options), and a menu item referencing both — the new item appeared **live** on the Register page's menu under its category; Daily Summary correctly reflected two paid test orders (€10.00 total, €0.59 tax, €10.00 cash) with zero console errors
 
-### Step 16 — Phase 1 exit check
-- [ ] Run through PRD §3.3 acceptance criteria and §3.4 exit criteria end-to-end
-- [ ] Simulated 50+ order shift, confirm zero data loss
+### Step 16 — Phase 1 exit check ✅ (all pass except one noted UX gap)
+- [x] **PRD §3.3 acceptance criteria:**
+  - Cash payment of €10 on a €7.30 order shows €2.70 change — exact match, backend-tested (Step 8)
+  - Switching dine-in/takeaway updates tax and the KDS ticket label — confirmed (Steps 11, 13)
+  - A placed order appears on the KDS in real time on the same network — confirmed via live Socket.IO push, not polling (Step 13)
+  - EOD totals reconcile with the sum of individual transactions — confirmed both structurally (report sums `order.total`/payment amounts directly) and empirically in the 60-order simulated shift below (€810.00 == €810.00)
+  - **"Adding a Large Latte, oat milk, extra shot takes ≤4 taps" — does NOT pass as built.** Actual count: tap item (1) → Large (2) → Oat (3) → Extra Shot (4) → "Add to order" (5) = **5 taps**. The gap is the mandatory confirm tap in `ModifierPicker` — shaving it to 4 would mean auto-adding once all required groups are satisfied (with some rule for when optional groups like Extras are "done"). Left as-is since that's a UX/product call, not a mechanical fix — flagging for a decision rather than silently changing the interaction.
+- [x] **PRD §3.4 exit criteria:**
+  - A full order can be taken, paid, sent to kitchen, and completed without errors — confirmed (Steps 12-13, two-browser-session test)
+  - Menu can be fully managed by an admin without developer help — confirmed (Step 15); **found and fixed a real gap during this check**: `MenuItemsPanel` had no `sortOrder` field at all (create form or edit column), so FR4.4 "reorder items for display" was silently unimplemented for menu items despite `CategoriesPanel` having it. Added it and verified the reorder actually changes `GET /api/menu`'s returned order (Chocolate Brownie sortOrder -5 vs Vanilla Sundae -1 → Brownie now returned first)
+  - **Simulated 50+ order shift, zero data loss** — ran 60 orders (mixed dine-in/takeaway, 1-3 lines each, modifiers, cash tenders with change) directly against the running backend: **60/60 succeeded, 0 failed**. Order count before/after delta matched exactly (60), and total-sales-vs-total-payments reconciliation matched exactly (€810.00 == €810.00). Spot-checked one order's full structure (lines, VAT fields, payments, subtotal+VAT-discount=total) for integrity, not just presence.
 
 ---
 
