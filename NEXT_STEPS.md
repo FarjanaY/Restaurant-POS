@@ -25,9 +25,10 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] Sample menu seed data (categories, modifier groups, menu items) added to `seed.js` for manual/integration testing
 - [x] Manually verified via curl against seeded data; automated integration test (`routes/menu.test.js`) covers active-only filtering and modifier-group population
 
-### Step 5 — Menu admin API (write side)
-- [ ] CRUD controllers for `Category`, `MenuItem`, `ModifierGroup`/`Modifier`
-- [ ] Wire real handlers into `backend/src/routes/menu.js` admin routes (replace 501 stubs)
+### Step 5 — Menu admin API (write side) ✅
+- [x] CRUD controllers for `Category`, `MenuItem`, `ModifierGroup`/`Modifier`
+- [x] New `routes/admin.js` — `/api/admin/categories`, `/menu-items`, `/modifier-groups` (list/create/update/delete), gated by `requireAuth` + `requireRole('admin')`
+- [x] Integration tests (`admin.test.js`): 401 with no token, 403 for non-admin role, full create/update/delete lifecycle per resource
 
 ### Step 6 — Auth
 - [ ] Seed at least one `User` (admin) with hashed PIN
