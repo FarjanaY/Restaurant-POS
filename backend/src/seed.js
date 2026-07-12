@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 import { connectDB } from './config/db.js';
 import TaxCategory from './models/TaxCategory.js';
@@ -7,6 +8,7 @@ import VatRate from './models/VatRate.js';
 import Category from './models/Category.js';
 import ModifierGroup from './models/ModifierGroup.js';
 import MenuItem from './models/MenuItem.js';
+import User from './models/User.js';
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/restaurant_pos';
 
@@ -143,10 +145,31 @@ async function seedSampleMenu() {
   console.log('Seeded sample menu (categories, modifier groups, menu items).');
 }
 
+// Dev-only default PINs — never reuse these in a real deployment.
+const DEV_STAFF = [
+  { name: 'Alex Admin', role: 'admin', pin: '1111' },
+  { name: 'Cara Cashier', role: 'cashier', pin: '2222' },
+];
+
+async function seedDevStaff() {
+  for (const { name, role, pin } of DEV_STAFF) {
+    const exists = await User.findOne({ name });
+    if (exists) continue;
+
+    const pinHash = await bcrypt.hash(pin, 10);
+    await User.create({ name, role, pinHash, active: true });
+  }
+
+  console.log(
+    `Seeded dev staff logins (PIN): ${DEV_STAFF.map((u) => `${u.name}=${u.pin}`).join(', ')} — dev only, do not use in production.`
+  );
+}
+
 async function run() {
   await connectDB(MONGO_URI);
   await seedTaxCategoriesAndRates();
   await seedSampleMenu();
+  await seedDevStaff();
   await mongoose.disconnect();
 }
 

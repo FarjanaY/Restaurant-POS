@@ -30,10 +30,10 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] New `routes/admin.js` — `/api/admin/categories`, `/menu-items`, `/modifier-groups` (list/create/update/delete), gated by `requireAuth` + `requireRole('admin')`
 - [x] Integration tests (`admin.test.js`): 401 with no token, 403 for non-admin role, full create/update/delete lifecycle per resource
 
-### Step 6 — Auth
-- [ ] Seed at least one `User` (admin) with hashed PIN
-- [ ] `POST /api/auth/login` — PIN login, issues JWT
-- [ ] Confirm `middleware/auth.js` correctly verifies tokens on a protected route
+### Step 6 — Auth ✅
+- [x] Seed dev staff (`Alex Admin`/1111, `Cara Cashier`/2222) with hashed PINs in `seed.js` — dev-only, flagged as such
+- [x] `POST /api/auth/login` — PIN-only login (iterates active users, bcrypt-compares), issues JWT with `sub`/`role`/`name`
+- [x] Confirmed end-to-end: real login token unlocks `/api/admin/categories` in an integration test and manually via curl against the local dev DB
 
 ### Step 7 — Orders API (core flow)
 - [ ] `POST /api/orders` — create order from cart, uses Step 2/3 services, assigns token number
