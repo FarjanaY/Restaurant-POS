@@ -75,10 +75,13 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] `Receipt` (rendered once `order.status === 'paid'`) — itemized lines with modifiers, VAT breakdown, tendered/change; "New Order" clears the cart
 - [x] Verified in a real browser end-to-end: Charge → tender €10 on a €5.00 order → receipt shows €5.00 change → New Order resets to an empty cart, zero console errors (the exact €10-on-€7.30-→-€2.70 PRD figure is already covered by the Step 8 backend tests, which do use €7.30)
 
-### Step 13 — Frontend: KDS screen
-- [ ] Connect to `/kds` socket namespace, render live order feed
-- [ ] Backend: bump needs an "in-progress"/"completed" status (or per-line done flag) plus a handler — deferred from Step 9 to build alongside the screen that actually drives it; likely a `socket.on('order:bump', ...)` handler in `sockets/kds.js` that updates the order and broadcasts `order:updated`/`order:bumped`
-- [ ] Item/order bump actions, elapsed-time timer with color escalation
+### Step 13 — Frontend: KDS screen ✅
+- [x] **Backend (deferred from Step 9):** bump implemented as REST endpoints, not raw socket commands — `PATCH /api/orders/:id/lines/:lineId` (per-item done, gated `admin`/`manager`/`kitchen`) and `POST /api/orders/:id/complete` (whole-order bump → `status: completed`), both emitting `order:updated` afterward via the existing `emitOrderUpdated` helper. Chose REST over `socket.on('order:bump', ...)` so bump actions get the same auth/role/error-handling middleware as every other mutation, rather than an unauthenticated parallel command channel
+- [x] `orders.js` route roles split per-endpoint (`READ_ROLES` includes `kitchen`; register mutations stay `admin`/`manager`/`cashier`; bump endpoints are `admin`/`manager`/`kitchen`) — previously the whole router was gated to register roles only, which would have locked kitchen out entirely
+- [x] Added a `kitchen`-role dev seed user (`Kyle Kitchen` / PIN 3333) so this is actually testable
+- [x] `KdsPage` — initial `GET /api/orders?status=paid` fetch, then `/kds` socket for live `order:new`/`order:updated`; per-line checkbox (done), whole-ticket "Bump" button, elapsed-time label with color escalation (green <5min, yellow 5–10min, red 10min+), "Recently Completed" sidebar (last 10, in-memory)
+- [x] Verified with two concurrent browser sessions (cashier + kitchen): a cashier's payment makes the order appear on the kitchen screen **without any reload**, and bumping moves it to Recently Completed **without any reload** — confirmed via explicit timing (no interval/refresh fired in the window) rather than assumed
+- [x] **Real bug caught by this testing, not assumed fixed:** the KDS socket connection was silently CORS-blocked because a stray leftover dev-server process was squatting on port 5173, pushing the actual frontend to 5174 while the backend's `CLIENT_ORIGIN` default only allows 5173. First test run showed order updates appearing to work, which turned out to be misleading — a follow-up run with explicit diagnostics (clean DB state, predictable token numbers, checking for CORS errors) confirmed the failure, then confirmed the fix
 
 ### Step 14 — Stripe Terminal integration
 - [ ] Backend: PaymentIntents flow via Stripe Node SDK

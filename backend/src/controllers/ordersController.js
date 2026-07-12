@@ -2,6 +2,7 @@ import Order from '../models/Order.js';
 import MenuItem from '../models/MenuItem.js';
 import { computeOrderTotals } from '../services/orderTotals.js';
 import { nextOrderToken } from '../services/tokenService.js';
+import { emitOrderUpdated } from '../sockets/kds.js';
 
 // Resolves client-sent { menuItemId, quantity, notes, modifierIds } into the
 // { menuItem, quantity, notes, modifiers } shape computeOrderTotals expects,
@@ -166,6 +167,56 @@ export async function voidOrder(req, res, next) {
     order.status = 'voided';
     order.closedAt = new Date();
     await order.save();
+    res.json(order);
+  } catch (err) {
+    next(err);
+  }
+}
+
+const KDS_VISIBLE_STATUSES = ['paid'];
+
+// Marks a single kitchen ticket line done/undone (FR3.4). Only meaningful on an
+// order the kitchen can actually see (paid) — bumping a line on an order that
+// hasn't reached the kitchen yet, or one already fully completed, is a no-op bug.
+export async function markLineDone(req, res, next) {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (!KDS_VISIBLE_STATUSES.includes(order.status)) {
+      return res
+        .status(409)
+        .json({ message: `Cannot bump a line on an order with status "${order.status}"` });
+    }
+
+    const line = order.lines.id(req.params.lineId);
+    if (!line) return res.status(404).json({ message: 'Order line not found' });
+
+    line.done = req.body.done !== false;
+    await order.save();
+    emitOrderUpdated(order);
+    res.json(order);
+  } catch (err) {
+    next(err);
+  }
+}
+
+// Whole-order bump — moves a paid order out of the active KDS queue.
+export async function completeOrder(req, res, next) {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (order.status !== 'paid') {
+      return res
+        .status(409)
+        .json({ message: `Cannot complete an order with status "${order.status}"` });
+    }
+
+    order.status = 'completed';
+    order.lines.forEach((line) => {
+      line.done = true;
+    });
+    await order.save();
+    emitOrderUpdated(order);
     res.json(order);
   } catch (err) {
     next(err);

@@ -149,6 +149,7 @@ async function seedSampleMenu() {
 const DEV_STAFF = [
   { name: 'Alex Admin', role: 'admin', pin: '1111' },
   { name: 'Cara Cashier', role: 'cashier', pin: '2222' },
+  { name: 'Kyle Kitchen', role: 'kitchen', pin: '3333' },
 ];
 
 async function seedDevStaff() {

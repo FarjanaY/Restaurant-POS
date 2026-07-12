@@ -83,12 +83,21 @@ after(async () => {
   await mongod.stop();
 });
 
-test('rejects unauthenticated and kitchen-role requests', async () => {
+test('rejects unauthenticated requests, and rejects kitchen role from register actions', async () => {
   const noAuth = await fetch(`${baseUrl}/api/orders`);
   assert.equal(noAuth.status, 401);
 
-  const kitchenReq = await fetch(`${baseUrl}/api/orders`, { headers: kitchenHeader });
-  assert.equal(kitchenReq.status, 403);
+  // Kitchen CAN read the order list (needed for the KDS screen)...
+  const kitchenRead = await fetch(`${baseUrl}/api/orders`, { headers: kitchenHeader });
+  assert.equal(kitchenRead.status, 200);
+
+  // ...but cannot create/build orders — that's a register (counter) action.
+  const kitchenWrite = await fetch(`${baseUrl}/api/orders`, {
+    method: 'POST',
+    headers: kitchenHeader,
+    body: JSON.stringify({ type: 'takeaway', lines: [] }),
+  });
+  assert.equal(kitchenWrite.status, 403);
 });
 
 test('creates a dine-in order with a modifier and computes VAT correctly', async () => {

@@ -19,6 +19,7 @@ const orderLineSchema = new Schema(
     vatRate: { type: Number, required: true },
     vatAmount: { type: Number, required: true },
     notes: { type: String, default: '' },
+    done: { type: Boolean, default: false }, // per-item KDS bump (FR3.4)
     modifiers: [orderLineModifierSchema],
   },
   { _id: true }
