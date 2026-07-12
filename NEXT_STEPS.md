@@ -49,9 +49,10 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] Order+payment write is already atomic — payments are embedded on the Order document, not a separate collection, so no multi-doc transaction is needed; added `optimisticConcurrency` on the Order schema instead to guard against two concurrent requests silently clobbering each other (mapped to 409 in `errorHandler`)
 - [x] Verified the PRD acceptance example exactly: €10 tendered on a €7.30 order → €2.70 change
 
-### Step 9 — KDS realtime wiring
-- [ ] Order controller emits `order:new` / `order:updated` / `order:bumped` on the `/kds` Socket.IO namespace
-- [ ] Manual test: create an order via API, confirm a connected socket client receives the event
+### Step 9 — KDS realtime wiring ✅
+- [x] `sockets/kds.js` exports `emitOrderNew`/`emitOrderUpdated` helpers (no-op if no socket server is attached, e.g. in route tests that import `app.js` directly)
+- [x] Wired `emitOrderNew` into the payment-completion path — per PRD FR3.1, the kitchen sees an order once it's **paid/confirmed**, not while the cashier is still building or holding it. Traced through the current business rules: `updateOrder`/`voidOrder` can only ever touch pre-payment orders (both are blocked once `status` leaves open/held), so there's no real caller for `order:updated`/`order:bumped` yet — bump specifically needs an "in-progress/completed" status model and a KDS-initiated action, which belongs with the KDS screen itself in Step 13, not stubbed speculatively here
+- [x] Verified with a real Socket.IO server + `socket.io-client` in-process: a connected `/kds` client receives nothing on order creation, then receives `order:new` the moment the order is paid
 
 ### Step 10 — Frontend: Menu → Cart
 - [ ] Menu screen fetching `GET /api/menu`, category tabs, tap-to-add
@@ -68,6 +69,7 @@ Check items off as we complete them. Current position: **Step 1**.
 
 ### Step 13 — Frontend: KDS screen
 - [ ] Connect to `/kds` socket namespace, render live order feed
+- [ ] Backend: bump needs an "in-progress"/"completed" status (or per-line done flag) plus a handler — deferred from Step 9 to build alongside the screen that actually drives it; likely a `socket.on('order:bump', ...)` handler in `sockets/kds.js` that updates the order and broadcasts `order:updated`/`order:bumped`
 - [ ] Item/order bump actions, elapsed-time timer with color escalation
 
 ### Step 14 — Stripe Terminal integration

@@ -1,4 +1,5 @@
 import Order from '../models/Order.js';
+import { emitOrderNew } from '../sockets/kds.js';
 
 function round2(n) {
   return Math.round(n * 100) / 100;
@@ -44,12 +45,20 @@ export async function addPayment(req, res, next) {
     }
 
     const totalPaid = round2(order.payments.reduce((sum, p) => sum + p.amount, 0));
-    if (totalPaid >= order.total) {
+    const justPaid = totalPaid >= order.total;
+    if (justPaid) {
       order.status = 'paid';
       order.closedAt = new Date();
     }
 
     await order.save();
+
+    // The kitchen only sees an order once it's paid/confirmed (PRD FR3.1) — not
+    // while the cashier is still building or holding it.
+    if (justPaid) {
+      emitOrderNew(order);
+    }
+
     res.status(201).json(order);
   } catch (err) {
     next(err);
