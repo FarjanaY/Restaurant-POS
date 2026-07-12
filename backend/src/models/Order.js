@@ -53,6 +53,7 @@ const orderSchema = new Schema(
     discount: { type: Number, default: 0 },
     total: { type: Number, default: 0 },
     closedAt: { type: Date, default: null },
+    notes: { type: String, default: '' }, // order-level special instructions (FR1.5) — see also per-line notes
     syncStatus: { type: String, enum: ['synced', 'pending'], default: 'synced' },
     clientOrderId: { type: String, index: true, sparse: true, unique: true }, // idempotency key for offline sync
     lines: [orderLineSchema],

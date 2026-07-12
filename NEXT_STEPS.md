@@ -61,10 +61,13 @@ Check items off as we complete them. Current position: **Step 1**.
 - [x] Cart panel — quantity +/-, remove, clear, running gross total, wired into the existing `cartSlice` (no changes needed there)
 - [x] Verified in a real browser via a Playwright script (`chromium` headless): menu loads, Cold Sandwich (no modifiers) adds directly, Latte opens the picker, Regular+Oat selections compute €4.00 correctly, cart total €9.00, zero console errors
 
-### Step 11 — Frontend: Order type, notes, hold/recall
-- [ ] Dine-in/takeaway toggle wired to VAT display
-- [ ] Special instructions (line + order)
-- [ ] Hold & recall UI hitting `PATCH /api/orders/:id`
+### Step 11 — Frontend: Order type, notes, hold/recall ✅
+- [x] **Prerequisite (not originally scoped, but required):** frontend PIN login — `authSlice` + `LoginScreen`, JWT persisted to `localStorage`, `apiClient` attaches it via a request interceptor, `App.jsx` gates the whole app on being logged in and shows the staff name/role + logout in the nav
+- [x] **Prerequisite (not originally scoped, but required):** added an order-level `notes` field to the `Order` model/controllers (only per-line notes existed before) — needed for FR1.5's "per line and/or per order" instructions
+- [x] Dine-in/takeaway toggle in `cartSlice`'s existing `orderType`, wired to a segmented control in the cart panel
+- [x] Special instructions — per-line notes input (`lineNotesChanged`) and an order-level notes textarea (`orderNotesChanged`)
+- [x] Hold & recall — `ordersSlice` (`holdOrder`, `fetchHeldOrders`, `recallOrder`) + `HeldOrdersPanel`; holding does create-then-`PATCH held` (or just `PATCH held` if recalling an already-existing order), recalling does `PATCH open` then hydrates the cart via a new `cartHydrated` reducer
+- [x] Verified in a real browser via Playwright: wrong PIN shows the actual backend error message (a real bug caught by testing — `authSlice` was surfacing axios's generic "Request failed with status 401" instead of the API's "Invalid PIN"; fixed via `rejectWithValue`), correct PIN logs in, order type/line notes/order notes all survive a hold → recall round trip intact, zero unexpected console errors
 
 ### Step 12 — Frontend: Payment (cash first)
 - [ ] Cash payment screen — tendered amount, change due

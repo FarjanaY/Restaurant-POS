@@ -240,3 +240,24 @@ test('rejects editing a voided order', async () => {
   });
   assert.equal(editRes.status, 409);
 });
+
+test('order-level notes can be set on creation and changed via PATCH', async () => {
+  const createRes = await fetch(`${baseUrl}/api/orders`, {
+    method: 'POST',
+    headers: cashierHeader,
+    body: JSON.stringify({
+      type: 'takeaway',
+      notes: 'No napkins',
+      lines: [{ menuItemId: coldSandwich._id, quantity: 1 }],
+    }),
+  });
+  const order = await createRes.json();
+  assert.equal(order.notes, 'No napkins');
+
+  const res = await fetch(`${baseUrl}/api/orders/${order._id}`, {
+    method: 'PATCH',
+    headers: cashierHeader,
+    body: JSON.stringify({ notes: 'Extra napkins' }),
+  });
+  assert.equal((await res.json()).notes, 'Extra napkins');
+});

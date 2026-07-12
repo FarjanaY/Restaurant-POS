@@ -50,7 +50,7 @@ function toRawLines(orderLines) {
 
 export async function createOrder(req, res, next) {
   try {
-    const { type, lines, tableId, discount, clientOrderId } = req.body;
+    const { type, lines, tableId, discount, notes, clientOrderId } = req.body;
 
     if (clientOrderId) {
       const existing = await Order.findOne({ clientOrderId });
@@ -72,6 +72,7 @@ export async function createOrder(req, res, next) {
       discount: totals.discount,
       total: totals.total,
       lines: totals.lines,
+      notes: notes || '',
       clientOrderId,
     });
 
@@ -114,7 +115,7 @@ export async function updateOrder(req, res, next) {
         .json({ message: `Cannot edit an order with status "${order.status}"` });
     }
 
-    const { status, lines, type, discount } = req.body;
+    const { status, lines, type, discount, notes } = req.body;
 
     if (lines || type || discount !== undefined) {
       const rawLines = lines || toRawLines(order.lines);
@@ -129,6 +130,10 @@ export async function updateOrder(req, res, next) {
       order.vatTotal = totals.vatTotal;
       order.discount = totals.discount;
       order.total = totals.total;
+    }
+
+    if (notes !== undefined) {
+      order.notes = notes;
     }
 
     if (status) {
