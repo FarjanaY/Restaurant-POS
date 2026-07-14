@@ -270,7 +270,6 @@ test('order-level notes can be set on creation and changed via PATCH', async () 
   });
   assert.equal((await res.json()).notes, 'Extra napkins');
 });
-<<<<<<< HEAD
 
 test('GET /api/orders with no page/limit still returns a plain array (legacy callers: KDS, held-orders)', async () => {
   const res = await fetch(`${baseUrl}/api/orders?status=open`, { headers: cashierHeader });
@@ -315,5 +314,3 @@ test('searches the order list by token number', async () => {
   assert.ok(body.orders.some((o) => o._id === order._id));
   assert.ok(body.orders.every((o) => o.tokenNumber === order.tokenNumber));
 });
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3

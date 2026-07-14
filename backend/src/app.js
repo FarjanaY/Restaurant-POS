@@ -8,7 +8,6 @@ import authRouter from './routes/auth.js';
 import adminRouter from './routes/admin.js';
 import terminalRouter from './routes/terminal.js';
 import reportsRouter from './routes/reports.js';
-<<<<<<< HEAD
 import tablesRouter from './routes/tables.js';
 import settingsRouter from './routes/settings.js';
 import staffRouter from './routes/staff.js';
@@ -16,8 +15,6 @@ import couponsRouter from './routes/coupons.js';
 import inventoryRouter from './routes/inventory.js';
 import customersRouter from './routes/customers.js';
 import dailyCostsRouter from './routes/dailyCosts.js';
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -32,7 +29,6 @@ app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/terminal', terminalRouter);
 app.use('/api/reports', reportsRouter);
-<<<<<<< HEAD
 app.use('/api/tables', tablesRouter);
 app.use('/api/settings', settingsRouter);
 app.use('/api/staff', staffRouter);
@@ -40,8 +36,6 @@ app.use('/api/coupons', couponsRouter);
 app.use('/api/inventory', inventoryRouter);
 app.use('/api/customers', customersRouter);
 app.use('/api/daily-costs', dailyCostsRouter);
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 
 app.use(notFound);
 app.use(errorHandler);

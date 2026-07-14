@@ -7,7 +7,4 @@ build/
 npm-debug.log*
 .DS_Store
 Thumbs.db
-<<<<<<< HEAD
 .claude
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3

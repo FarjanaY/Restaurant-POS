@@ -1,11 +1,8 @@
 import Order from '../models/Order.js';
-<<<<<<< HEAD
 import MenuItem from '../models/MenuItem.js';
 import Category from '../models/Category.js';
 import User from '../models/User.js';
 import DailyCost from '../models/DailyCost.js';
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 
 function round2(n) {
   return Math.round(n * 100) / 100;
@@ -20,12 +17,9 @@ function dayRangeUTC(dateStr) {
   return { start, end };
 }
 
-<<<<<<< HEAD
 const WEEKDAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const TREND_DAY_OPTIONS = [7, 30, 90];
 
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 // End-of-day summary (FR5.1) — total sales, order count, tax collected, tender
 // breakdown. Scoped to orders closed (paid) within the given day; voided orders
 // never reach 'paid' so they're excluded automatically.
@@ -56,7 +50,6 @@ export async function getDailySummary(req, res, next) {
     next(err);
   }
 }
-<<<<<<< HEAD
 
 // One-page operational snapshot for the admin Dashboard: today's headline
 // numbers, a sales trend, today's order-status mix (queue health), best
@@ -590,5 +583,3 @@ export async function getSalesReport(req, res, next) {
     next(err);
   }
 }
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3

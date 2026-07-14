@@ -6,15 +6,12 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 
 import app from '../app.js';
 import Order from '../models/Order.js';
-<<<<<<< HEAD
 import User from '../models/User.js';
 import MenuItem from '../models/MenuItem.js';
 import Category from '../models/Category.js';
 import TaxCategory from '../models/TaxCategory.js';
 import Table from '../models/Table.js';
 import DailyCost from '../models/DailyCost.js';
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 
 process.env.JWT_SECRET = 'test-secret';
 
@@ -24,19 +21,15 @@ let baseUrl;
 let managerHeader;
 let cashierHeader;
 
-<<<<<<< HEAD
 function round2(n) {
   return Math.round(n * 100) / 100;
 }
 
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 function authHeader(role) {
   const token = jwt.sign({ sub: new mongoose.Types.ObjectId().toString(), role }, process.env.JWT_SECRET);
   return { Authorization: `Bearer ${token}` };
 }
 
-<<<<<<< HEAD
 function lineOf(nameSnapshot, quantity, lineTotal) {
   return {
     menuItemId: new mongoose.Types.ObjectId(),
@@ -49,8 +42,6 @@ function lineOf(nameSnapshot, quantity, lineTotal) {
   };
 }
 
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 function orderAt(overrides) {
   return {
     tokenNumber: Math.floor(Math.random() * 1000000),
@@ -77,7 +68,6 @@ before(async () => {
   const today = new Date();
   const todayNoon = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 12));
   const yesterdayNoon = new Date(todayNoon.getTime() - 24 * 60 * 60 * 1000);
-<<<<<<< HEAD
   // 8 days ago falls inside the *previous* 7-day window (today-13..today-7),
   // one day outside the current trend window (today-6..today) — exercises
   // previousTrend without polluting the current-period assertions below.
@@ -100,25 +90,17 @@ before(async () => {
   });
   const table1 = await Table.create({ name: 'Table 1', capacity: 2 });
   await DailyCost.create({ date: todayNoon.toISOString().slice(0, 10), amount: 30, notes: 'Test cost' });
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 
   await Order.create([
     orderAt({
       status: 'paid',
-<<<<<<< HEAD
       type: 'dine_in',
       tableId: table1._id,
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
       closedAt: todayNoon,
       subtotal: 4.41,
       vatTotal: 0.59,
       total: 5.0,
-<<<<<<< HEAD
       lines: [{ ...lineOf('Latte', 2, 5.0), menuItemId: latteMenuItem._id }],
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
       payments: [{ method: 'cash', amount: 5.0, tendered: 5.0, change: 0, staffId: new mongoose.Types.ObjectId() }],
     }),
     orderAt({
@@ -127,15 +109,11 @@ before(async () => {
       subtotal: 10,
       vatTotal: 1.35,
       total: 11.35,
-<<<<<<< HEAD
       lines: [lineOf('Cold Sandwich', 1, 11.35)],
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
       payments: [
         { method: 'card', amount: 11.35, processorRef: 'pi_x', staffId: new mongoose.Types.ObjectId() },
       ],
     }),
-<<<<<<< HEAD
     // Yesterday — must be excluded from today's summary, but included in the 7-day trend.
     orderAt({ status: 'paid', createdAt: yesterdayNoon, closedAt: yesterdayNoon, subtotal: 100, vatTotal: 20, total: 120 }),
     // 8 days ago — must land in previousTrend, not trend.
@@ -152,12 +130,6 @@ before(async () => {
     // Still in progress today, no closedAt yet — only statusBreakdown should see these.
     orderAt({ status: 'open', closedAt: null }),
     orderAt({ status: 'held', closedAt: null }),
-=======
-    // Yesterday — must be excluded from today's summary.
-    orderAt({ status: 'paid', closedAt: yesterdayNoon, subtotal: 100, vatTotal: 20, total: 120 }),
-    // Voided, never paid — must be excluded regardless of date.
-    orderAt({ status: 'voided', closedAt: todayNoon, subtotal: 5, vatTotal: 0.5, total: 5.5 }),
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
   ]);
 
   server = app.listen(0);
@@ -196,7 +168,6 @@ test('accepts an explicit ?date= for a past day', async () => {
   assert.equal(body.orderCount, 1);
   assert.equal(body.totalSales, 120);
 });
-<<<<<<< HEAD
 
 test('rejects cashier role from the dashboard summary', async () => {
   const res = await fetch(`${baseUrl}/api/reports/dashboard-summary`, { headers: cashierHeader });
@@ -432,5 +403,3 @@ test('sales-report accepts an explicit ?from=&to= range regardless of granularit
   assert.equal(body.buckets.length, 1);
   assert.equal(body.buckets[0].totalSales, 16.35);
 });
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3

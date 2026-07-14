@@ -47,24 +47,17 @@ const orderSchema = new Schema(
       enum: ['open', 'held', 'paid', 'voided', 'completed'],
       default: 'open',
     },
-<<<<<<< HEAD
     // Kitchen-facing prep stage, only meaningful while status === 'paid' — set
     // manually by kitchen staff (FR3.x), independent of the per-line `done`
     // checklist above, which just tracks which individual items are prepped.
     kitchenStatus: { type: String, enum: ['new', 'cooking', 'ready'], default: 'new' },
-=======
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
     tableId: { type: Schema.Types.ObjectId, ref: 'Table', default: null },
     staffId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     subtotal: { type: Number, default: 0 },
     vatTotal: { type: Number, default: 0 },
-<<<<<<< HEAD
     discount: { type: Number, default: 0 }, // combined total of couponCode's discount + manualDiscount
     couponCode: { type: String, default: null }, // which coupon contributed to `discount`, if any
     manualDiscount: { type: Number, default: 0 }, // staff-applied flat discount, stacks with a coupon
-=======
-    discount: { type: Number, default: 0 },
->>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
     total: { type: Number, default: 0 },
     closedAt: { type: Date, default: null },
     notes: { type: String, default: '' }, // order-level special instructions (FR1.5) — see also per-line notes
