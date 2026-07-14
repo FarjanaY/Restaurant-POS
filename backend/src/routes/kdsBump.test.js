@@ -122,6 +122,7 @@ test('rejects completing an order twice', async () => {
   assert.equal(res.status, 409);
 });
 
+<<<<<<< HEAD
 test('kitchen can set the kitchen status directly (independent of the line checklist)', async () => {
   const order = await createPaidOrder();
   assert.equal(order.kitchenStatus, 'new');
@@ -188,6 +189,8 @@ test('rejects setting kitchen status on an order that has not reached the kitche
   assert.equal(res.status, 409);
 });
 
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 test('rejects bumping a line on an order that has not reached the kitchen yet', async () => {
   const createRes = await fetch(`${baseUrl}/api/orders`, {
     method: 'POST',

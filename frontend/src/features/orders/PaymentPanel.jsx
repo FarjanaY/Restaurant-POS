@@ -3,14 +3,21 @@ import { useDispatch } from 'react-redux';
 
 import { addCashPayment, createCardIntent, confirmCardPayment } from './ordersSlice.js';
 import { connectSimulatedReader, collectAndProcessCardPayment } from './stripeTerminal.js';
+<<<<<<< HEAD
 import PrintReceiptButton from '../../components/PrintReceiptButton.jsx';
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 
 function Receipt({ order, onDone }) {
   const lastPayment = order.payments[order.payments.length - 1];
 
   return (
     <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-4">
+<<<<<<< HEAD
       <div className="w-full max-w-sm rounded-sm bg-white p-6 shadow-xl">
+=======
+      <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-xl">
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
         <h2 className="text-lg font-semibold text-gray-900">Receipt — Order #{order.tokenNumber}</h2>
         <p className="text-sm text-gray-500">{order.type === 'dine_in' ? 'Dine-in' : 'Takeaway'}</p>
 
@@ -61,6 +68,7 @@ function Receipt({ order, onDone }) {
           )}
         </div>
 
+<<<<<<< HEAD
         <div className="mt-4 flex gap-2">
           <PrintReceiptButton order={order} className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-gray-300 py-2 font-medium text-gray-700 transition hover:bg-gray-50" />
           <button
@@ -71,6 +79,15 @@ function Receipt({ order, onDone }) {
             New Order
           </button>
         </div>
+=======
+        <button
+          type="button"
+          onClick={onDone}
+          className="mt-4 w-full rounded-md bg-gray-900 py-2 font-medium text-white"
+        >
+          New Order
+        </button>
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
       </div>
     </div>
   );
@@ -137,7 +154,11 @@ export default function PaymentPanel({ order: initialOrder, onClose, onDone }) {
 
   return (
     <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-4">
+<<<<<<< HEAD
       <div className="w-full max-w-sm rounded-sm bg-white p-6 shadow-xl">
+=======
+      <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-xl">
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
         <h2 className="text-lg font-semibold text-gray-900">Charge — Order #{order.tokenNumber}</h2>
 
         <div className="mt-4 space-y-1 text-sm text-gray-600">
@@ -174,8 +195,13 @@ export default function PaymentPanel({ order: initialOrder, onClose, onDone }) {
                 setMethod(m);
                 setError(null);
               }}
+<<<<<<< HEAD
               className={`flex-1 rounded-lg border px-3 py-1.5 text-sm font-medium transition ${
                 method === m ? 'border-indigo-500 bg-indigo-500 text-white' : 'border-gray-300 text-gray-700 hover:border-gray-400'
+=======
+              className={`flex-1 rounded-md border px-3 py-1.5 text-sm font-medium ${
+                method === m ? 'border-gray-900 bg-gray-900 text-white' : 'border-gray-300 text-gray-700'
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
               }`}
             >
               {m === 'cash' ? 'Cash' : 'Card / Contactless'}
@@ -196,21 +222,33 @@ export default function PaymentPanel({ order: initialOrder, onClose, onDone }) {
               autoFocus
               value={tendered}
               onChange={(e) => setTendered(e.target.value)}
+<<<<<<< HEAD
               className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-xl focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+=======
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-xl"
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
             />
             {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
             <div className="mt-4 flex gap-2">
               <button
                 type="button"
                 onClick={onClose}
+<<<<<<< HEAD
                 className="flex-1 rounded-lg border border-gray-300 py-2 text-gray-700 hover:bg-gray-50"
+=======
+                className="flex-1 rounded-md border border-gray-300 py-2 text-gray-700"
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting || !tendered || Number(tendered) <= 0}
+<<<<<<< HEAD
                 className="flex-1 rounded-lg bg-indigo-500 py-2 text-white transition hover:bg-indigo-600 disabled:opacity-40"
+=======
+                className="flex-1 rounded-md bg-gray-900 py-2 text-white disabled:opacity-40"
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
               >
                 {submitting ? 'Processing…' : 'Take Payment'}
               </button>
@@ -226,7 +264,11 @@ export default function PaymentPanel({ order: initialOrder, onClose, onDone }) {
               <button
                 type="button"
                 onClick={onClose}
+<<<<<<< HEAD
                 className="flex-1 rounded-lg border border-gray-300 py-2 text-gray-700 hover:bg-gray-50"
+=======
+                className="flex-1 rounded-md border border-gray-300 py-2 text-gray-700"
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
               >
                 Cancel
               </button>
@@ -234,7 +276,11 @@ export default function PaymentPanel({ order: initialOrder, onClose, onDone }) {
                 type="button"
                 onClick={handleCardSubmit}
                 disabled={submitting}
+<<<<<<< HEAD
                 className="flex-1 rounded-lg bg-indigo-500 py-2 text-white transition hover:bg-indigo-600 disabled:opacity-40"
+=======
+                className="flex-1 rounded-md bg-gray-900 py-2 text-white disabled:opacity-40"
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
               >
                 {cardStage === 'connecting' && 'Connecting reader…'}
                 {cardStage === 'collecting' && 'Awaiting card…'}

@@ -9,11 +9,14 @@ const menuItemSchema = new Schema(
     imageUrl: { type: String, default: '' },
     taxCategoryId: { type: Schema.Types.ObjectId, ref: 'TaxCategory', required: true },
     active: { type: Boolean, default: true },
+<<<<<<< HEAD
     // Distinct from `active` — active controls whether the item exists on the
     // menu at all, while `available` is a same-day "86 it" switch staff can
     // flip without touching the item's menu presence/config.
     available: { type: Boolean, default: true },
     promoLabel: { type: String, default: '' }, // e.g. "20% OFF", "Buy 1 Get 1" — display-only, doesn't change pricing
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
     sortOrder: { type: Number, default: 0 },
     modifierGroupIds: [{ type: Schema.Types.ObjectId, ref: 'ModifierGroup' }],
   },

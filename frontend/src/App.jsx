@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+=======
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 
 import RegisterPage from './pages/RegisterPage.jsx';
 import KdsPage from './pages/KdsPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
+<<<<<<< HEAD
 import DashboardPage from './pages/DashboardPage.jsx';
 import OrdersPage from './pages/OrdersPage.jsx';
 import TablesPage from './pages/TablesPage.jsx';
@@ -27,6 +33,14 @@ import {
 
 function App() {
   const { token } = useSelector((state) => state.auth);
+=======
+import LoginScreen from './features/auth/LoginScreen.jsx';
+import { loggedOut } from './features/auth/authSlice.js';
+
+function App() {
+  const dispatch = useDispatch();
+  const { token, user } = useSelector((state) => state.auth);
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 
   if (!token) {
     return <LoginScreen />;
@@ -34,6 +48,7 @@ function App() {
 
   return (
     <BrowserRouter>
+<<<<<<< HEAD
       <SidebarProvider>
         <div className="flex h-screen bg-gray-50">
           <Sidebar />
@@ -139,6 +154,40 @@ function App() {
           </div>
         </div>
       </SidebarProvider>
+=======
+      <div className="min-h-screen bg-gray-50">
+        <nav className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3">
+          <div className="flex gap-4">
+            <Link to="/" className="font-medium text-gray-900">
+              Register
+            </Link>
+            <Link to="/kds" className="font-medium text-gray-900">
+              Kitchen
+            </Link>
+            <Link to="/admin" className="font-medium text-gray-900">
+              Admin
+            </Link>
+          </div>
+          <div className="flex items-center gap-3 text-sm text-gray-600">
+            <span>
+              {user.name} ({user.role})
+            </span>
+            <button
+              type="button"
+              onClick={() => dispatch(loggedOut())}
+              className="text-gray-400 hover:text-red-600"
+            >
+              Log out
+            </button>
+          </div>
+        </nav>
+        <Routes>
+          <Route path="/" element={<RegisterPage />} />
+          <Route path="/kds" element={<KdsPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+        </Routes>
+      </div>
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
     </BrowserRouter>
   );
 }

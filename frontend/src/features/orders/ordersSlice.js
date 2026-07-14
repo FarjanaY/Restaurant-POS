@@ -10,6 +10,7 @@ function toApiLines(cartLines) {
   }));
 }
 
+<<<<<<< HEAD
 // Creates the order server-side if this cart hasn't been sent yet, or PATCHes
 // the existing one (e.g. recalled from held) so its lines/type/notes match the
 // current cart — the one place every other thunk goes through to stay in sync.
@@ -41,6 +42,21 @@ export const holdOrder = createAsyncThunk('orders/hold', async (cart) => {
   const synced = await syncCartToServer(cart);
   const withCoupon = await reapplyCouponIfAny(synced, cart.couponCode);
   const { data: held } = await apiClient.patch(`/orders/${withCoupon._id}`, { status: 'held' });
+=======
+// Holding a cart that doesn't exist server-side yet is create-then-mark-held;
+// a cart recalled from an existing held order re-holds via a plain PATCH.
+export const holdOrder = createAsyncThunk('orders/hold', async (cart) => {
+  const payload = { type: cart.orderType, notes: cart.orderNotes, lines: toApiLines(cart.lines) };
+
+  const orderId = cart.currentOrderId;
+  if (orderId) {
+    const { data } = await apiClient.patch(`/orders/${orderId}`, { ...payload, status: 'held' });
+    return data;
+  }
+
+  const { data: created } = await apiClient.post('/orders', payload);
+  const { data: held } = await apiClient.patch(`/orders/${created._id}`, { status: 'held' });
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
   return held;
 });
 
@@ -54,6 +70,7 @@ export const recallOrder = createAsyncThunk('orders/recall', async (orderId) => 
   return data;
 });
 
+<<<<<<< HEAD
 // Voids an order that was already sent to the server (open/held, unpaid) —
 // the backend rejects voiding anything already paid, by design.
 export const cancelOrder = createAsyncThunk(
@@ -75,11 +92,27 @@ export const sendOrder = createAsyncThunk('orders/send', async (cart, { rejectWi
   try {
     const synced = await syncCartToServer(cart);
     return await reapplyCouponIfAny(synced, cart.couponCode);
+=======
+// Syncs the cart to a server-side order before payment — creates it if this is a
+// brand-new cart, or PATCHes it if it already exists (e.g. recalled from held).
+// Payments work against either 'open' or 'held' orders on the backend, so this
+// deliberately doesn't force a status change.
+export const sendOrder = createAsyncThunk('orders/send', async (cart, { rejectWithValue }) => {
+  const payload = { type: cart.orderType, notes: cart.orderNotes, lines: toApiLines(cart.lines) };
+  try {
+    if (cart.currentOrderId) {
+      const { data } = await apiClient.patch(`/orders/${cart.currentOrderId}`, payload);
+      return data;
+    }
+    const { data } = await apiClient.post('/orders', payload);
+    return data;
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
   } catch (err) {
     return rejectWithValue(err.response?.data?.message || 'Could not send order');
   }
 });
 
+<<<<<<< HEAD
 // Applying a coupon requires the order to exist server-side first (the discount
 // is resolved against its actual gross total), so this syncs the cart, then applies.
 export const applyCoupon = createAsyncThunk(
@@ -139,6 +172,8 @@ export const removeManualDiscount = createAsyncThunk(
   }
 );
 
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 export const addCashPayment = createAsyncThunk(
   'orders/addCashPayment',
   async ({ orderId, tendered }, { rejectWithValue }) => {

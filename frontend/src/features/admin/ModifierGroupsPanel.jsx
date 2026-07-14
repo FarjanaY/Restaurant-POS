@@ -64,7 +64,11 @@ export default function ModifierGroupsPanel() {
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               required
+<<<<<<< HEAD
               className="mt-1 rounded-lg border border-gray-300 px-2 py-1"
+=======
+              className="mt-1 rounded-md border border-gray-300 px-2 py-1"
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
             />
           </div>
           <div>
@@ -73,7 +77,11 @@ export default function ModifierGroupsPanel() {
               type="number"
               value={form.minSelect}
               onChange={(e) => setForm((f) => ({ ...f, minSelect: e.target.value }))}
+<<<<<<< HEAD
               className="mt-1 w-20 rounded-lg border border-gray-300 px-2 py-1"
+=======
+              className="mt-1 w-20 rounded-md border border-gray-300 px-2 py-1"
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
             />
           </div>
           <div>
@@ -82,7 +90,11 @@ export default function ModifierGroupsPanel() {
               type="number"
               value={form.maxSelect}
               onChange={(e) => setForm((f) => ({ ...f, maxSelect: e.target.value }))}
+<<<<<<< HEAD
               className="mt-1 w-20 rounded-lg border border-gray-300 px-2 py-1"
+=======
+              className="mt-1 w-20 rounded-md border border-gray-300 px-2 py-1"
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
             />
           </div>
           <label className="flex items-center gap-1 text-sm text-gray-700">
@@ -102,7 +114,11 @@ export default function ModifierGroupsPanel() {
                 placeholder="Modifier name"
                 value={m.name}
                 onChange={(e) => updateModifierRow(i, { name: e.target.value })}
+<<<<<<< HEAD
                 className="rounded-lg border border-gray-300 px-2 py-1 text-sm"
+=======
+                className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
               />
               <input
                 type="number"
@@ -110,19 +126,31 @@ export default function ModifierGroupsPanel() {
                 placeholder="Price delta"
                 value={m.priceDelta}
                 onChange={(e) => updateModifierRow(i, { priceDelta: e.target.value })}
+<<<<<<< HEAD
                 className="w-24 rounded-lg border border-gray-300 px-2 py-1 text-sm"
+=======
+                className="w-24 rounded-md border border-gray-300 px-2 py-1 text-sm"
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
               />
               <button type="button" onClick={() => removeModifierRow(i)} className="text-xs text-red-600">
                 Remove
               </button>
             </div>
           ))}
+<<<<<<< HEAD
           <button type="button" onClick={addModifierRow} className="text-sm font-medium text-indigo-500 hover:text-indigo-600">
+=======
+          <button type="button" onClick={addModifierRow} className="text-sm text-gray-600 underline">
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
             + Add modifier option
           </button>
         </div>
 
+<<<<<<< HEAD
         <button type="submit" className="rounded-lg bg-indigo-500 px-4 py-1.5 text-white transition hover:bg-indigo-600">
+=======
+        <button type="submit" className="rounded-md bg-gray-900 px-4 py-1.5 text-white">
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
           Add Modifier Group
         </button>
         {error && <p className="text-sm text-red-600">{error}</p>}

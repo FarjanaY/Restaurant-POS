@@ -2,6 +2,7 @@ import Order from '../models/Order.js';
 import MenuItem from '../models/MenuItem.js';
 import { computeOrderTotals } from '../services/orderTotals.js';
 import { nextOrderToken } from '../services/tokenService.js';
+<<<<<<< HEAD
 import { resolveCouponDiscount } from '../services/couponService.js';
 import { emitOrderUpdated } from '../sockets/kds.js';
 
@@ -17,6 +18,10 @@ function combineDiscounts(couponAmount, manualAmount, grossTotal) {
   return Math.min(Math.max(combined, 0), grossTotal);
 }
 
+=======
+import { emitOrderUpdated } from '../sockets/kds.js';
+
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 // Resolves client-sent { menuItemId, quantity, notes, modifierIds } into the
 // { menuItem, quantity, notes, modifiers } shape computeOrderTotals expects,
 // looking up live menu docs so price/VAT snapshots are always taken server-side.
@@ -96,6 +101,7 @@ export async function createOrder(req, res, next) {
   }
 }
 
+<<<<<<< HEAD
 const MAX_PAGE_SIZE = 200;
 
 // Plain-array response (legacy, still used by KDS/held-orders which never send
@@ -144,6 +150,13 @@ export async function listOrders(req, res, next) {
     ]);
 
     res.json({ orders, total, page: pageNum, limit: pageSize, totalPages: Math.ceil(total / pageSize) });
+=======
+export async function listOrders(req, res, next) {
+  try {
+    const filter = {};
+    if (req.query.status) filter.status = req.query.status;
+    res.json(await Order.find(filter).sort('-createdAt'));
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
   } catch (err) {
     next(err);
   }
@@ -172,7 +185,11 @@ export async function updateOrder(req, res, next) {
         .json({ message: `Cannot edit an order with status "${order.status}"` });
     }
 
+<<<<<<< HEAD
     const { status, lines, type, discount, notes, tableId } = req.body;
+=======
+    const { status, lines, type, discount, notes } = req.body;
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 
     if (lines || type || discount !== undefined) {
       const rawLines = lines || toRawLines(order.lines);
@@ -193,10 +210,13 @@ export async function updateOrder(req, res, next) {
       order.notes = notes;
     }
 
+<<<<<<< HEAD
     if (tableId !== undefined) {
       order.tableId = tableId || null;
     }
 
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
     if (status) {
       if (!HOLD_RECALL_STATUSES.includes(status)) {
         return res
@@ -213,6 +233,7 @@ export async function updateOrder(req, res, next) {
   }
 }
 
+<<<<<<< HEAD
 // Applying a coupon always re-resolves against the order's current gross total
 // (before discount) rather than trusting a client-supplied amount, so it's safe
 // to call repeatedly (e.g. after the cart changes) or to swap one coupon for another.
@@ -359,6 +380,8 @@ export async function removeManualDiscount(req, res, next) {
   }
 }
 
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 export async function voidOrder(req, res, next) {
   try {
     const order = await Order.findById(req.params.id);
@@ -406,6 +429,7 @@ export async function markLineDone(req, res, next) {
   }
 }
 
+<<<<<<< HEAD
 const KITCHEN_STATUSES = ['new', 'cooking', 'ready'];
 
 // Manual kitchen-stage control — lets kitchen staff move a ticket between
@@ -444,6 +468,8 @@ export async function updateKitchenStatus(req, res, next) {
   }
 }
 
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 // Whole-order bump — moves a paid order out of the active KDS queue.
 export async function completeOrder(req, res, next) {
   try {

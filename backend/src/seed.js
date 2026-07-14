@@ -9,8 +9,11 @@ import Category from './models/Category.js';
 import ModifierGroup from './models/ModifierGroup.js';
 import MenuItem from './models/MenuItem.js';
 import User from './models/User.js';
+<<<<<<< HEAD
 import Coupon from './models/Coupon.js';
 import Table from './models/Table.js';
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/restaurant_pos';
 
@@ -69,6 +72,7 @@ async function seedSampleMenu() {
     { name: 'Drinks', sortOrder: 0 },
     { upsert: true, new: true }
   );
+<<<<<<< HEAD
   const pizza = await Category.findOneAndUpdate(
     { name: 'Pizza' },
     { name: 'Pizza', sortOrder: 1 },
@@ -92,6 +96,11 @@ async function seedSampleMenu() {
   const desserts = await Category.findOneAndUpdate(
     { name: 'Desserts' },
     { name: 'Desserts', sortOrder: 5 },
+=======
+  const food = await Category.findOneAndUpdate(
+    { name: 'Food' },
+    { name: 'Food', sortOrder: 1 },
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
     { upsert: true, new: true }
   );
 
@@ -143,7 +152,10 @@ async function seedSampleMenu() {
     { name: 'Latte' },
     {
       name: 'Latte',
+<<<<<<< HEAD
       description: 'Espresso with steamed milk',
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
       categoryId: drinks._id,
       basePrice: 3.5,
       taxCategoryId: hotFood._id,
@@ -156,7 +168,10 @@ async function seedSampleMenu() {
     { name: 'Cold Sandwich' },
     {
       name: 'Cold Sandwich',
+<<<<<<< HEAD
       description: 'Fresh-cut sandwich, served chilled',
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
       categoryId: food._id,
       basePrice: 5.0,
       taxCategoryId: coldFood._id,
@@ -166,6 +181,7 @@ async function seedSampleMenu() {
     { upsert: true, new: true }
   );
 
+<<<<<<< HEAD
   // Real photos via the Foodish API (https://foodish-api.com) — a free, open
   // API built specifically for placeholder food images in projects like this,
   // not scraped from an arbitrary source. Static image URLs, verified reachable.
@@ -226,6 +242,8 @@ async function seedSampleMenu() {
     { upsert: true, new: true }
   );
 
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
   console.log('Seeded sample menu (categories, modifier groups, menu items).');
 }
 
@@ -234,7 +252,10 @@ const DEV_STAFF = [
   { name: 'Alex Admin', role: 'admin', pin: '1111' },
   { name: 'Cara Cashier', role: 'cashier', pin: '2222' },
   { name: 'Kyle Kitchen', role: 'kitchen', pin: '3333' },
+<<<<<<< HEAD
   { name: 'Sam Manager', role: 'manager', pin: '4444' },
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 ];
 
 async function seedDevStaff() {
@@ -251,6 +272,7 @@ async function seedDevStaff() {
   );
 }
 
+<<<<<<< HEAD
 // Dev/demo coupons — not a full promo-code admin UI (that's Phase 2 FR10.2),
 // just enough real, working codes to exercise the discount-coupon flow end to end.
 const DEV_COUPONS = [
@@ -284,13 +306,18 @@ async function seedTables() {
   console.log(`Seeded tables: ${DEV_TABLES.map((t) => t.name).join(', ')}`);
 }
 
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
 async function run() {
   await connectDB(MONGO_URI);
   await seedTaxCategoriesAndRates();
   await seedSampleMenu();
   await seedDevStaff();
+<<<<<<< HEAD
   await seedCoupons();
   await seedTables();
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
   await mongoose.disconnect();
 }
 

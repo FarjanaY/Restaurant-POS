@@ -3,6 +3,7 @@
 body {
   margin: 0;
 }
+<<<<<<< HEAD
 
 /* App-wide: every scroll container (sidebar nav, page content, tables,
    drawers, ...) scrolls normally but never shows scrollbar chrome. */
@@ -32,3 +33,5 @@ body {
     width: 80mm;
   }
 }
+=======
+>>>>>>> bdb08ea8c4a9d4ddf83e75a1c151f089d16cdeb3
