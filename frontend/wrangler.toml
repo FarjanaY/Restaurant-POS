@@ -1,0 +1,10 @@
+name = "restaurant-pos"
+compatibility_date = "2025-01-01"
+
+# Pure static site — the Vite build output, served directly by Cloudflare's
+# edge with no Worker script needed. `single-page-application` makes every
+# unmatched path fall back to index.html so React Router's client-side
+# routes (e.g. /admin, /kds) work on a hard refresh instead of 404ing.
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
