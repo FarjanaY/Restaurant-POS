@@ -1,0 +1,34 @@
+@import 'tailwindcss';
+
+body {
+  margin: 0;
+}
+
+/* App-wide: every scroll container (sidebar nav, page content, tables,
+   drawers, ...) scrolls normally but never shows scrollbar chrome. */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge (Chromium) */
+}
+
+/* Thermal receipt printing (frontend/src/components/ThermalReceipt.jsx) — only
+   the receipt's own markup should reach the page, everything else in the app
+   is hidden for the duration of the print job. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #print-receipt-root,
+  #print-receipt-root * {
+    visibility: visible;
+  }
+  #print-receipt-root {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80mm;
+  }
+}
