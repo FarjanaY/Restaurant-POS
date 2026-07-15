@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '../../api/client.js';
+import { downloadCsv } from '../../utils/csv.js';
 import { todayYmd, addDays } from '../../utils/dateRange.js';
 import { categoryEmoji } from '../menu/categoryEmoji.js';
+import { IconDownload } from '../../components/icons.jsx';
 import DateRangeFilterButton from '../../components/DateRangeFilterButton.jsx';
 import ReportStatCard from './ReportStatCard.jsx';
 
@@ -22,6 +24,15 @@ export default function ItemSalesReportPanel() {
       .catch((err) => setError(err.response?.data?.message || 'Could not load report'));
   }, [range.from, range.to]);
 
+  function exportCsv() {
+    if (!report) return;
+    downloadCsv(
+      `item-sales-report-${range.from}-to-${range.to}.csv`,
+      ['Item', 'Quantity Sold', 'Revenue', 'Share %'],
+      report.items.map((item) => [item.name, item.quantity, item.revenue.toFixed(2), item.share])
+    );
+  }
+
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -29,7 +40,18 @@ export default function ItemSalesReportPanel() {
           <h2 className="text-sm font-semibold text-gray-900">Item-based Sales Report</h2>
           <p className="text-xs text-gray-400">Which menu items sold best in the selected range.</p>
         </div>
-        <DateRangeFilterButton from={range.from} to={range.to} onChange={(from, to) => setRange({ from, to })} />
+        <div className="flex items-center gap-2">
+          <DateRangeFilterButton from={range.from} to={range.to} onChange={(from, to) => setRange({ from, to })} />
+          <button
+            type="button"
+            onClick={exportCsv}
+            disabled={!report}
+            className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <IconDownload className="h-4 w-4" />
+            Export CSV
+          </button>
+        </div>
       </div>
 
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
