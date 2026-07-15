@@ -1,10 +1,12 @@
 name = "restaurant-pos"
+main = "worker.js"
 compatibility_date = "2025-01-01"
 
-# Pure static site — the Vite build output, served directly by Cloudflare's
-# edge with no Worker script needed. `single-page-application` makes every
-# unmatched path fall back to index.html so React Router's client-side
-# routes (e.g. /admin, /kds) work on a hard refresh instead of 404ing.
+# Pure static site — the Vite build output. SPA fallback (serving
+# index.html for unmatched client-side routes like /admin, /kds) is
+# handled manually in worker.js rather than via `not_found_handling`,
+# since that declarative option has open false-positive bugs in its
+# _redirects-style validation (cloudflare/workers-sdk#10992, #11824).
 [assets]
 directory = "./dist"
-not_found_handling = "single-page-application"
+binding = "ASSETS"
