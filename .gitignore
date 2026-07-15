@@ -3,6 +3,8 @@ dist/
 build/
 .env
 *.local
+cridentials.txt
+credentials.txt
 
 npm-debug.log*
 .DS_Store
